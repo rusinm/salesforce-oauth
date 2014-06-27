@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:context="http://www.springframework.org/schema/context" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+    <sfdc:config-with-oauth name="Salesforce__OAuth_" consumerKey="${sfdc.oauth.consumerKey}" consumerSecret="${sfdc.oauth.consumerSecret}" doc:name="Salesforce (OAuth)">
+        <sfdc:oauth-callback-config domain="${sfdc.oauth.domain}" localPort="${sfdc.oauth.port}" path="${sfdc.oauth.path}"/>
+    </sfdc:config-with-oauth>
+    <context:property-placeholder location="common.properties"/>
+    <batch:job name="salesforce-oauthBatch1">
+        <batch:process-records>
+            <batch:step name="Batch_Step">
+                <logger message="contact processed: #[payload]" level="INFO" doc:name="Logger"/>
+            </batch:step>
+        </batch:process-records>
+    </batch:job>
+
+    
+    <flow name="salesforce-oauthFlow1" doc:name="salesforce-oauthFlow1">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP" />
+        <sfdc:authorize config-ref="Salesforce__OAuth_" display="PAGE" doc:name="Salesforce" accessTokenUrl="https://na1.salesforce.com/services/oauth2/token" authorizationUrl="https://na1.salesforce.com/services/oauth2/authorize"/>
+        <sfdc:query config-ref="Salesforce__OAuth_" query="SELECT id,lastname,lastmodifieddate from contact" doc:name="Salesforce"/>
+        <batch:execute name="salesforce-oauthBatch1" doc:name="Batch Execute"/>
+        <http:response-builder status="200" contentType="text/xhtml" doc:name="HTTP Response Builder"/>
+    </flow>
+</mule>

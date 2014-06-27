@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="salesforce-oauth">
+    <global-element name="Salesforce (OAuth)" type="http://www.mulesoft.org/schema/mule/sfdc/config-with-oauth" entity-id="Salesforce (OAuth)#1">
+        <properties>
+            <property name="consumerKey" value="${sfdc.oauth.consumerKey}"/>
+            <property name="useDefaultRule"/>
+            <property name="allowFieldTruncationSupport"/>
+            <property name="name" value="Salesforce__OAuth_"/>
+            <property name="assignmentRuleId"/>
+            <property name="timeObjectStore-ref"/>
+            <property name="auxiliary;index" value="1"/>
+            <property name="batchSobjectMaxDepth"/>
+            <property name="clientId"/>
+            <property name="consumerSecret" value="${sfdc.oauth.consumerSecret}"/>
+            <property name="onNoToken"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/oauth-callback-config;0">
+                <property name="domain" value="${sfdc.oauth.domain}"/>
+                <property name="path" value="${sfdc.oauth.path}"/>
+                <property name="localPort" value="${sfdc.oauth.port}"/>
+                <property name="isProcessed$$$$ " value="true"/>
+                <property name="auxiliary;index" value="2"/>
+                <property name="auxiliary;wrapIn" value="2"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element name="Property Placeholder" type="http://www.springframework.org/schema/context/property-placeholder" entity-id="Property Placeholder#1">
+        <properties>
+            <property name="properties-ref"/>
+            <property name="order"/>
+            <property name="location" value="common.properties"/>
+            <property name="local-override"/>
+            <property name="system-properties-mode"/>
+            <property name="file-encoding"/>
+            <property name="auxiliary;index" value="3"/>
+            <property name="ignore-unresolvable"/>
+            <property name="ignore-resource-not-found"/>
+        </properties>
+    </global-element>
+    <flow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="container" SubFlow="false" type="http://www.mulesoft.org/schema/mule/batch/job" entity-id="Batch#1">
+        <properties>
+            <property name="name" value="salesforce-oauthBatch1"/>
+            <property name="max-failed-records"/>
+            <property name="scheduling-strategy"/>
+            <property name="auxiliary;index" value="6"/>
+        </properties>
+        <lane xsi:type="nestedContainer" name="Input" type="http://www.mulesoft.org/schema/mule/batch/input" hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="bac83f6d-c5b7-40cf-bee4-63f108c8fae4"/>
+        <lane xsi:type="nestedContainer" name="Process Records" type="http://www.mulesoft.org/schema/mule/batch/process-records" hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="557f349b-ceb3-44ef-a813-069a1f524e59">
+            <scope type="http://www.mulesoft.org/schema/mule/batch/step" entity-id="Batch Step#1">
+                <properties>
+                    <property name="filter-expression"/>
+                    <property name="name" value="Batch_Step"/>
+                    <property name="accept-expression"/>
+                    <property name="accept-policy"/>
+                    <property name="auxiliary;index" value="8"/>
+                </properties>
+                <compartment entity-id="compartment#1">
+                    <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#1">
+                        <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#1">
+                            <graphicalData x="0" y="0" width="0" height="0"/>
+                            <properties>
+<property name="message" value="contact processed: #[payload]"/>
+<property name="category"/>
+<property name="level" value="INFO"/>
+<property name="auxiliary;index" value="9"/>
+                            </properties>
+                        </pattern>
+                    </lane>
+                </compartment>
+            </scope>
+            <properties>
+                <property name="auxiliary;index" value="7"/>
+            </properties>
+        </lane>
+        <lane xsi:type="nestedContainer" name="On Complete" type="http://www.mulesoft.org/schema/mule/batch/on-complete" hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="028ac7f6-e1a2-484b-919c-67f7f5f06bb3"/>
+        <containerBehavior>default</containerBehavior>
+    </flow>
+    <flow SubFlow="false" name="salesforce-oauthFlow1" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="ccc74096-0ec2-4cda-a72e-84aefd5e411b">
+        <properties>
+            <property name="initialState"/>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property name="auxiliary;index" value="10"/>
+        </properties>
+        <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#2">
+            <graphicalData x="0" y="0" width="0" height="0"/>
+            <endpoint direction="Inbound" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="followRedirects"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keepAlive"/>
+                    <property name="contentType"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="password"/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
+                    <property name="address"/>
+                    <property name="path"/>
+                    <property name="encoding"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="method"/>
+                    <property name="user"/>
+                    <property name="auxiliary;index" value="11"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property name="connector-ref"/>
+                </properties>
+            </endpoint>
+            <pattern name="Salesforce" type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" entity-id="Salesforce#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="immediate"/>
+                    <property name="authorizationUrl" value="https://na1.salesforce.com/services/oauth2/authorize"/>
+                    <property name="accessTokenUrl" value="https://na1.salesforce.com/services/oauth2/token"/>
+                    <property name="state"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/sfdc/authorize"/>
+                    <property name="display" value="PAGE"/>
+                    <property name="prompt"/>
+                    <property name="accessTokenId"/>
+                    <property name="config-ref" value="Salesforce__OAuth_"/>
+                    <property name="auxiliary;index" value="12"/>
+                </properties>
+            </pattern>
+            <pattern name="Salesforce" type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" entity-id="Salesforce#2">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="fetchSize"/>
+                    <property name="proxyUsername"/>
+                    <property name="securityToken"/>
+                    <property name="proxyHost"/>
+                    <property name="query" value="SELECT id,lastname,lastmodifieddate from contact"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/sfdc/query"/>
+                    <property name="proxyPort"/>
+                    <property name="password"/>
+                    <property name="url"/>
+                    <property name="username"/>
+                    <property name="sessionId"/>
+                    <property name="serviceEndpoint"/>
+                    <property name="accessTokenId"/>
+                    <property name="config-ref" value="Salesforce__OAuth_"/>
+                    <property name="auxiliary;index" value="13"/>
+                    <property name="proxyPassword"/>
+                </properties>
+            </pattern>
+            <pattern name="Batch Execute" type="http://www.mulesoft.org/schema/mule/batch/execute" entity-id="Batch Execute#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="name" value="salesforce-oauthBatch1"/>
+                    <property name="auxiliary;index" value="14"/>
+                </properties>
+            </pattern>
+            <pattern name="HTTP Response Builder" type="http://www.mulesoft.org/schema/mule/http/response-builder" entity-id="HTTP Response Builder#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="cookiesLabel"/>
+                    <property name="status" value="200"/>
+                    <property name="contentType" value="text/xhtml"/>
+                    <property name="auxiliary;index" value="15"/>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+</mule-configuration>
